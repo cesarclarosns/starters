@@ -20,6 +20,7 @@ class AuthController {
           req.body
         );
 
+        res.cookie("persist", true);
         res.cookie("refreshToken", refreshToken, {
           httpOnly: true,
           maxAge: 1 * 60 * 60 * 1000,
@@ -81,6 +82,7 @@ class AuthController {
         });
       } catch (err) {
         console.log(err?.toString());
+        res.clearCookie("persist");
         res.status(401).send(err);
       }
     };
@@ -89,6 +91,7 @@ class AuthController {
   signOut(): RequestHandler {
     return async (req, res) => {
       try {
+        res.clearCookie("persist");
         res.clearCookie("refreshToken", { httpOnly: true });
 
         const refreshToken = req.cookies?.refreshToken;
